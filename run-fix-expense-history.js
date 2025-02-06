@@ -6,11 +6,11 @@ async function runMigration() {
   let connection;
   try {
     connection = await mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: '1234',
-      database: 'expense_tracker',
-      multipleStatements: true
+      host: 'brznrs2uhfucw819pltf-mysql.services.clever-cloud.com',
+      user: 'u1a9hlzc3vbezakt',
+      password: 'X7dQJvTe4SsyWkjKOItX',
+      database: 'brznrs2uhfucw819pltf',
+      port: 3306
     });
 
     // First, create the table

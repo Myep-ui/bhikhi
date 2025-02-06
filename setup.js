@@ -2,21 +2,16 @@ const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '1234'
+  host: 'brznrs2uhfucw819pltf-mysql.services.clever-cloud.com',
+  user: 'u1a9hlzc3vbezakt',
+  password: 'X7dQJvTe4SsyWkjKOItX',
+  database: 'brznrs2uhfucw819pltf',
+  port: 3306
 });
 
 // Create database and tables
 const setupDatabase = async () => {
   try {
-    // Create database
-    await connection.promise().query('CREATE DATABASE IF NOT EXISTS expense_tracker');
-    console.log('Database created');
-
-    // Use database
-    await connection.promise().query('USE expense_tracker');
-
     // Create users table
     await connection.promise().query(`
       CREATE TABLE IF NOT EXISTS users (
