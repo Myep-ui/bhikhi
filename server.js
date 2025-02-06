@@ -4,21 +4,22 @@ const cors = require('cors');
 
 const app = express();
 
-// CORS configuration
-const corsOptions = {
-  origin: ['https://eloquent-kitsune-28f1c6.netlify.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
+// Enable CORS for all routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
 
-// Apply CORS before other middleware
-app.use(cors(corsOptions));
+// Basic middleware
 app.use(express.json());
-
-// Handle preflight requests
-app.options('*', cors(corsOptions));
 
 // Request logging
 app.use((req, res, next) => {
