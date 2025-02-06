@@ -10,13 +10,25 @@ const fs = require('fs');
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: ["https://eloquent-kitsune-28f1c6.netlify.app", "http://localhost:3000"],
-  methods: "GET,POST,PUT,DELETE",
-  allowedHeaders: "Content-Type,Authorization"
-}));
+app.use(cors());  // Enable CORS for all origins during development
 
+// Parse JSON bodies
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Add headers for CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use('/uploads', express.static('uploads'));
 
 // Routes
@@ -34,10 +46,17 @@ app.use('/api', apiRouter);
 app.get("/", (req, res) => {
   res.json({ message: "API is working!" });
 });
-// Error handler
+
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: err.message });
+  console.error('Error:', err);
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ message: 'Invalid JSON' });
+  }
+  res.status(500).json({ 
+    message: 'Internal server error', 
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
 });
 
 // Start server
