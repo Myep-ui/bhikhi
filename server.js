@@ -10,9 +10,8 @@ const fs = require('fs');
 const app = express();
 
 // Middleware
-// app.use(cors());
 app.use(cors({
-  origin: "*", // Change this to a specific domain if needed
+  origin: ["https://eloquent-kitsune-28f1c6.netlify.app", "http://localhost:3000"],
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization"
 }));
@@ -21,13 +20,16 @@ app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
 // Routes
+const apiRouter = express.Router();
 
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/expenses', require('./routes/expenses'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/departments', require('./routes/departments')); // Add departments route
-app.use('/api/projects', require('./routes/projects')); // Add projects route
-app.use('/api/transport-modes', require('./routes/transportModes')); // Add transport modes route
+apiRouter.use('/auth', require('./routes/auth'));
+apiRouter.use('/expenses', require('./routes/expenses'));
+apiRouter.use('/users', require('./routes/users'));
+apiRouter.use('/departments', require('./routes/departments'));
+apiRouter.use('/projects', require('./routes/projects'));
+apiRouter.use('/transport-modes', require('./routes/transportModes'));
+
+app.use('/api', apiRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "API is working!" });
